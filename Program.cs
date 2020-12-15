@@ -6,7 +6,7 @@ namespace SYSA_Project_2
 {
     class Program
     {
-        public static string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\wrike\\source\\repos\\SYSA-Project-2\\Project2Db.mdf;Integrated Security=True";
+        public static string connectString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\wrike\\Source\\Repos\\SYSA-Project-2.1\\Project2Db.mdf;Integrated Security=True";
         public static int loginCounter = 0;
 
         public static string iD;
@@ -194,7 +194,7 @@ namespace SYSA_Project_2
 
                 }
             }
-
+            cn.Close();
         }
 
         public static void DisplayMenu()
@@ -240,17 +240,17 @@ namespace SYSA_Project_2
         {
             bool isValid = false;
             string temp;
-            int studentID;
-            string name;
-            int gned;
-            int itce;
-            int netd;
-            int oop;
-            int syde;
-            int sysa;
-            int webd;
-            float gpa;
-            string comments;
+            int studentID = 0;
+            string name = "";
+            int gned = 0;
+            int itce = 0;
+            int netd = 0;
+            int oop = 0;
+            int syde = 0;
+            int sysa = 0;
+            int webd = 0;
+            double gpa = 0;
+            string comments = "";
 
             Console.WriteLine("   Enter Student Grade Sheet Details");
             Console.WriteLine("----------------------------------------");
@@ -336,12 +336,83 @@ namespace SYSA_Project_2
 
             gpa = (gned + itce + netd + oop + syde + sysa + webd) / 7;
 
+            gpa = GpaOutput(gpa);
+
+            Console.Write("Enter Any Comments: ");
+            comments = Console.ReadLine().Trim();
+
+            while(isValid == false)
+            {
+                if(comments == string.Empty)
+                {
+                    Console.WriteLine("Comments must not be empty, please try again.");
+                    Console.Write("Enter Any Comments: ");
+                    comments = Console.ReadLine().Trim();
+                }
+                else if(comments.Length > 50)
+                {
+                    Console.WriteLine("Comments must not be greater than 50 characters, please try again.");
+                    Console.Write("Enter Any Comments: ");
+                    comments = Console.ReadLine().Trim();
+                }
+                else
+                {
+                    isValid = true;
+                }
+            }
+
+            SqlConnection cn = new SqlConnection(connectString);
+            try
+            {
+                
+                cn.Open();
+                string insertQuery = "INSERT INTO Gradesheet (StudentID, StudentName, GNED000, ITCE3200, NETD3202, OOP3200, SYDE3203, SYSA3204, WEBD3201, GPA, Comments)" +
+                    "                   VALUES(" + studentID + ", '" + name + "', " + gned + ", " + itce + ", " + netd + ", " + oop + ", " + syde + ", " + sysa + ", " + webd + "," + gpa + ", '" + comments + "');";
+                SqlCommand insertCommand = new SqlCommand(insertQuery, cn);
+                insertCommand.ExecuteNonQuery();
+                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("The grade sheet details were successfully entered into the database!");
+                Console.Write("Press any key to continue...");
+                Console.ReadKey();
+                Console.Clear();
+                DisplayMenu();
+
+            }
+            catch
+            {
+                Console.WriteLine("----------------------------------------");
+                Console.Write("There was an error entering the record. Press any key to return to the Menu...");
+                Console.ReadKey();
+                Console.Clear();
+                DisplayMenu();
+                cn.Close();
+            }
+            cn.Close();
 
         }
 
         public static void DisplayReport()
         {
+            SqlConnection cn = new SqlConnection(connectString);
+            cn.Open();
+            string selectQuery = "SELECT * FROM Gradesheet;";
+            SqlCommand selectCommand = new SqlCommand(selectQuery, cn);
+            SqlDataReader dataReader;
 
+            
+            try
+            {
+                dataReader = selectCommand.ExecuteReader();
+                while (dataReader.Read())
+                {
+                    Console.WriteLine("------------------------------");
+                    Console.WriteLine("Welcome " + dataReader["LoginID"]);
+                }
+            }
+            catch
+            {
+
+            }
         }
 
         public static int GradeInput(string course)
@@ -392,6 +463,61 @@ namespace SYSA_Project_2
             isValid = false;
 
             return grade;
+        }
+
+        public static double GpaOutput(double gpa)
+        {
+            Console.WriteLine("----------------------------------------");
+            if (gpa >= 90)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Outstanding");
+                return 5.00;
+            }
+            else if(gpa >= 85 && gpa <= 89)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Exemplary");
+                return 4.50;
+            }
+            else if (gpa >= 80 && gpa <= 84)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Excellent");
+                return 4.00;
+            }
+            else if (gpa >= 75 && gpa <= 79)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Very Good");
+                return 3.50;
+            }
+            else if (gpa >= 70 && gpa <= 74)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Good");
+                return 3.00;
+            }
+            else if (gpa >= 65 && gpa <= 69)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Satisfactory");
+                return 2.50;
+            }
+            else if (gpa >= 60 && gpa <= 64)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is Acceptable");
+                return 2.00;
+            }
+            else if (gpa >= 55 && gpa <= 59)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is a Conditional Pass");
+                return 1.50;
+            }
+            else if (gpa >= 50 && gpa <= 54)
+            {
+                Console.WriteLine("GPA: " + gpa + " which is a Conditional Pass");
+                return 1.00;
+            }
+            else
+            {
+                Console.WriteLine("GPA: " + gpa + " which is a Fail");
+                return 0.00;
+            }
         }
     }
 }
