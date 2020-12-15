@@ -15,6 +15,9 @@ namespace SYSA_Project_2
 
         static void Main(string[] args)
         {
+            // Set the WindowWidth 
+            Console.WindowWidth = 180;          
+
             Login();
         }
 
@@ -393,26 +396,40 @@ namespace SYSA_Project_2
 
         public static void DisplayReport()
         {
+            
+
+            Console.Clear();
+            Console.WriteLine("                                                                          Grade Sheet Report");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+            Console.WriteLine(" Student ID       Student Name       GNED000       ITCE3200       NETD3203       OOP3200       SYDE3203       SYSA3204       WEBD3201       GPA       Comments");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
             SqlConnection cn = new SqlConnection(connectString);
             cn.Open();
             string selectQuery = "SELECT * FROM Gradesheet;";
             SqlCommand selectCommand = new SqlCommand(selectQuery, cn);
             SqlDataReader dataReader;
-
-            
+                        
             try
             {
                 dataReader = selectCommand.ExecuteReader();
                 while (dataReader.Read())
                 {
-                    Console.WriteLine("------------------------------");
-                    Console.WriteLine("Welcome " + dataReader["LoginID"]);
+                    Console.WriteLine(" " + dataReader["StudentID"] + "        " + dataReader["StudentName"] + "         " + dataReader["GNED000"] + "         " + dataReader["ITCE3200"] + "         " + dataReader["NETD3202"] + "         " + dataReader["OOP3200"] + "         " + dataReader["SYDE3203"] + "         " + dataReader["WEBD3201"] + "         " + dataReader["GPA"] + "         " + dataReader["Comments"]);
+                    Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
                 }
             }
             catch
             {
-
+                Console.WriteLine("Error");
             }
+
+            Console.WriteLine("\n\n");
+            Console.Write("Press any key to continue...");
+            Console.ReadKey();
+            Console.Clear();
+            DisplayMenu();
         }
 
         public static int GradeInput(string course)
