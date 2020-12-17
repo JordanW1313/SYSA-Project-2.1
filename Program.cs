@@ -127,7 +127,7 @@ namespace SYSA_Project_2
                     code = Console.ReadLine().Trim();
                 }
 
-                else if (code.Length > 3)
+                else if (code.Length != 3)
                 {
                     Console.WriteLine("Security Code must not be greater than 3 characters, please try again.");
                     Console.Write("Enter Security Code: ");
@@ -300,12 +300,21 @@ namespace SYSA_Project_2
 
             while (isValid == false)
             {
+                bool isNumbers = temp.All(char.IsDigit);
                 // Student name empty validation
                 if (temp == string.Empty)
                 {
                     Console.WriteLine("Student Name must not be empty, please try again!");
                     Console.Write("Enter the Student Name: ");
                     temp = Console.ReadLine().Trim();
+                }
+
+                else if (isNumbers == true)
+                {
+                    Console.WriteLine("Student Name must be numeric characters, please try again!");
+                    Console.Write("Enter the Student Name: ");
+                    temp = Console.ReadLine().Trim();
+                    isNumbers = temp.All(char.IsDigit);
                 }
 
                 // Students name length validation
@@ -396,7 +405,15 @@ namespace SYSA_Project_2
 
         public static void DisplayReport()
         {
-            
+            int gnedTotal = 0;
+            int itceTotal = 0;
+            int netdTotal = 0;
+            int oopTotal = 0;
+            int sydeTotal = 0;
+            int sysaTotal = 0;
+            int webdTotal = 0;
+            double gpaTotal = 0;
+            int count = 0;
 
             Console.Clear();
             Console.WriteLine("                                                                          Grade Sheet Report");
@@ -418,12 +435,28 @@ namespace SYSA_Project_2
                 {
                     Console.WriteLine(" " + dataReader["StudentID"] + "        " + dataReader["StudentName"] + "         " + dataReader["GNED000"] + "         " + dataReader["ITCE3200"] + "         " + dataReader["NETD3202"] + "         " + dataReader["OOP3200"] + "         " + dataReader["SYDE3203"] + "         " + dataReader["WEBD3201"] + "         " + dataReader["GPA"] + "         " + dataReader["Comments"]);
                     Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+
+                    //gnedTotal += Int32.Parse((string)dataReader["GNED000"]);
+                    //itceTotal += Int32.Parse((string)dataReader["ITCE3200"]);
+                    //netdTotal += Int32.Parse((string)dataReader["NETD3202"]);
+                    //oopTotal += Int32.Parse((string)dataReader["OOP3200"]);
+                    //sydeTotal += Int32.Parse((string)dataReader["SYDE3203"]);
+                    //sysaTotal += Int32.Parse((string)dataReader["SYSA3204"]);
+                    //webdTotal += Int32.Parse((string)dataReader["WEBD3201"]);
+                    //gpaTotal += Double.Parse((string)dataReader["GPA"]);
+                    //count++;
                 }
+                
             }
             catch
             {
                 Console.WriteLine("Error");
             }
+
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+            Console.WriteLine("  Averages         " + (gnedTotal / count) + "         " + (gnedTotal / count) + "         " + (itceTotal / count) + "         " + (netdTotal / count) + "         " + (oopTotal / count) + "         " + (sydeTotal / count) + "         " + (sysaTotal / count) + "         " + (webdTotal / count) + "         " + (gpaTotal / count));
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 
             Console.WriteLine("\n\n");
             Console.Write("Press any key to continue...");
